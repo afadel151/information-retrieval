@@ -1,0 +1,25 @@
+name: Mirror lab2 to public
+
+on:
+  push:
+    paths:
+      - 'labs/lab2/lab/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          fetch-depth: 0 
+
+      - name: Push subtree to public repo
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add document-indexer https://github.com/afadel151/document-indexer.git  # No need for $TOKEN here now
+          git subtree push --prefix=labs/lab2/lab document-indexer main || { echo "Push failed"; exit 1; }
