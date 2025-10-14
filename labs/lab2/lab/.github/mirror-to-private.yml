@@ -1,0 +1,39 @@
+name: Mirror public lab2 to private
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/**'
+
+jobs:
+  sync-back:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout public repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone private repo
+        run: |
+          git clone https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/afadel151/information-retrieval.git
+          cd information-retrieval
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Copy public content into private folder
+        run: |
+          rm -rf information-retrieval/labs/lab2/lab
+          mkdir -p information-retrieval/labs/lab2
+          cp -r * information-retrieval/labs/lab2/lab
+          
+      - name: Commit and push changes to private repo
+        run: |
+          cd information-retrieval
+          git add .
+          git commit -m "Sync from public document-indexer" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.PRIVATE_REPO_TOKEN }}@github.com/afadel151/information-retrieval.git main
