@@ -12,25 +12,27 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout full history
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PUBLIC_REPO_TOKEN }}
-          fetch-depth: 0
-
-      - name: Clean old subtree refs
+      - name: Checkout private repo (fresh)
         run: |
-          git fetch --all --tags
+          git clone --no-tags --no-single-branch https://x-access-token:${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/afadel151/information-retrieval.git .
+          git fetch origin main
+          git checkout main
+          git log -1
+
+      - name: Clean any broken subtree metadata
+        run: |
           git for-each-ref --format='delete %(refname)' refs/subtree-split/ | git update-ref --stdin || true
           git reflog expire --expire=now --all
           git gc --prune=now
+          rm -rf .git/refs/subtree-split || true
 
-      - name: Push subtree to public repo
+      - name: Prepare split and push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git remote add document-indexer https://github.com/afadel151/document-indexer.git || true
-          git remote -v
-          echo "Pushing labs/lab2/lab subtree to document-indexer..."
+          git fetch --all --tags
+          echo "Creating fresh subtree branch..."
           git subtree split --prefix=labs/lab2/lab -b lab2-split
+          echo "Pushing to document-indexer..."
           git push --force document-indexer lab2-split:main
