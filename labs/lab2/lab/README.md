@@ -8,7 +8,6 @@ It demonstrates how modern search engines index, weight, and rank documents usin
 This program reads a corpus of text documents, builds an **inverted index**, and allows you to run **free-text queries** from the command line.  
 It’s designed as a **learning project** for students and developers who want to understand how search engines work internally.
 
-s
 
 ---
 ## Features
