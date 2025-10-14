@@ -18,11 +18,12 @@ jobs:
           token: ${{ secrets.PUBLIC_REPO_TOKEN }}
           fetch-depth: 0
 
-      - name: Fetch all remote refs and tags
+      - name: Clean old subtree refs
         run: |
-          git fetch --all
-          git fetch --tags
-          git fsck --full
+          git fetch --all --tags
+          git for-each-ref --format='delete %(refname)' refs/subtree-split/ | git update-ref --stdin || true
+          git reflog expire --expire=now --all
+          git gc --prune=now
 
       - name: Push subtree to public repo
         run: |
