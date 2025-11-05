@@ -1,0 +1,6 @@
+com\emp\ir\QueryAssessment.class
+com\emp\ir\AssessmentParser.class
+com\emp\ir\RankBasedHelper.class
+com\emp\ir\App.class
+com\emp\ir\SetBasedHelper.class
+com\emp\ir\QueryResult.class
