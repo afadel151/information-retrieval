@@ -1,4 +1,4 @@
-package  com.emp.indexer;
+package  com.emp.search_engine;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,6 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import com.emp.indexer.DocumentMeta;
+import com.emp.indexer.DocumentReader;
+import com.emp.indexer.IndexData;
+import com.emp.indexer.IndexDiskIO;
+import com.emp.indexer.Indexer;
+import com.emp.indexer.QueryProcessor;
+import com.emp.indexer.RetrievalEngine;
+import com.emp.indexer.Stemmer;
+import com.emp.indexer.StopWordsFilter;
+import com.emp.indexer.Tokenizer;
 
 public class Main {
 
