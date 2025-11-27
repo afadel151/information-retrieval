@@ -1,4 +1,4 @@
-package com.emp;
+package com.emp.crawler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -49,6 +49,10 @@ public class Crawler {
         }
         String lower = url.toLowerCase();
         int lastDot = lower.lastIndexOf('.');
+        if (!lower.startsWith("http") || !lower.startsWith("https")) {
+            return false;
+        }
+
         if (lastDot == -1) {
             return true;
         }
@@ -90,7 +94,7 @@ public class Crawler {
             urlToDiscover.add(rootUrl);
         }
         crawlSite(rootUrl);
-        int crawledPages = 0;
+        int crawledPages = urlCrawled.size();
         System.out.println("\n--- Starting Crawling Process ---");
         System.out.println("Max pages: " + this.pagesNumber);
         System.out.println("Initial Discover Size: " + urlToDiscover.size());
