@@ -3,19 +3,35 @@ package com.emp.web_indexer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.emp.web_indexer.models.HtmlToken;
+
 public class HtmlTokenizer {
-    private final String  delimiters = "<>#=,.’:;!?-_()[]{}\"\\/\n\r\t";
 
-    public HtmlTokenizer() {}
+    private final String delimiters = " <>#=,.’:;!?-_()[]{}\"\\/\n\r\t";
 
-     public List<HtmlToken> tokenize(String text) {
-        List<HtmlToken> tokens = new ArrayList<>();
-        StringBuilder current = new StringBuilder();
+    public HtmlTokenizer() {
+    }
+
+    public List<HtmlToken> tokenize(String text) {
+        boolean insideTag = false;
+        boolean ignoreContent = false; 
+        
         String currentTag = null;
+        StringBuilder tagBuffer = new StringBuilder();
+
+
+
+
+        List<HtmlToken> tokens = new ArrayList<>();
+        
+        StringBuilder current = new StringBuilder();
+
         int position = 0;
 
-        boolean insideTag = false;
-        StringBuilder tagBuffer = new StringBuilder();
+
+        text = text.replaceAll("(?is)<script.*?>.*?</script>", " ");
+        text = text.replaceAll("(?is)<style.*?>.*?</style>", " ");
+
 
         for (char c : text.toCharArray()) {
 
@@ -31,7 +47,16 @@ public class HtmlTokenizer {
 
             if (c == '>') {
                 insideTag = false;
-                currentTag = tagBuffer.toString().trim();   
+                String raw = tagBuffer.toString().trim();
+                int space = raw.indexOf(' ');
+                if (space > 0) {
+                    raw = raw.substring(0, space);
+                }
+                if (raw.startsWith("/")) {
+                    // remove / from end tag
+                    raw = raw.substring(1);
+                }
+                currentTag = raw.toLowerCase();
                 continue;
             }
 

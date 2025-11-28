@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.emp.web_indexer.HtmlToken;
+import com.emp.web_indexer.models.HtmlToken;
 
 public class StopWordsFilter {
     private final Set<String> stopwords;

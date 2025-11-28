@@ -7,7 +7,6 @@ C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\co
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\IndexData.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\IndexDiskIO.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\Indexer.java
-C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\Main.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\Posting.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\QueryProcessor.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\RetrievalEngine.java
@@ -20,3 +19,14 @@ C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\co
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\StopWordsFilter.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\indexer\Tokenizer.java
 C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\language_detector\Detector.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\search_engine\Main.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\HtmlQueryProcessor.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\HtmlTokenizer.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\models\HtmlToken.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\models\PositionInfo.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\models\Posting.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\models\TagWeights.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\models\WebIndex.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\WebIndexDiskService.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\WebIndexer.java
+C:\Users\FADEL\Documents\GitHub\information-retrieval\labs\lab4\src\main\java\com\emp\web_indexer\WebSearchEngine.java

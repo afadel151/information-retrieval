@@ -8,7 +8,7 @@ import org.tartarus.snowball.ext.FrenchStemmer;
 
 import com.emp.indexer.snowball.ext.porterStemmer;
 import com.emp.language_detector.Detector;
-import com.emp.web_indexer.HtmlToken;
+import com.emp.web_indexer.models.HtmlToken;
 
 public class Stemmer {
 

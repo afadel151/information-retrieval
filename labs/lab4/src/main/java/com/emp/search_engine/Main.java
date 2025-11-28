@@ -10,16 +10,15 @@ import java.util.Scanner;
 
 import com.emp.indexer.DocumentMeta;
 import com.emp.indexer.DocumentReader;
-import com.emp.indexer.IndexData;
-import com.emp.indexer.IndexDiskIO;
-import com.emp.indexer.Indexer;
-import com.emp.indexer.QueryProcessor;
-import com.emp.indexer.RetrievalEngine;
 import com.emp.indexer.Stemmer;
 import com.emp.indexer.StopWordsFilter;
-import com.emp.indexer.Tokenizer;
+import com.emp.web_indexer.HtmlQueryProcessor;
 import com.emp.web_indexer.HtmlTokenizer;
+import com.emp.web_indexer.WebIndexDiskService;
 import com.emp.web_indexer.WebIndexer;
+import com.emp.web_indexer.WebSearchEngine;
+import com.emp.web_indexer.models.Posting;
+import com.emp.web_indexer.models.WebIndex;
 
 public class Main {
 
@@ -35,10 +34,10 @@ public class Main {
         HtmlTokenizer tokenizer = new HtmlTokenizer();
         StopWordsFilter stopFilter = new StopWordsFilter(englishStopword,frenchStopword,htmlStopwords);
         Stemmer stemmer = new Stemmer();
-        IndexDiskIO io = new IndexDiskIO();
+        WebIndexDiskService io = new WebIndexDiskService();
 
         Map<String, Integer> lexicon;
-        Map<Integer, List<int[]>> postings;
+        Map<Integer,List<Posting>> postings;
         Map<Integer, DocumentMeta> documents;
         Map<Integer, Integer> termDf = new HashMap<>();
 
@@ -64,7 +63,7 @@ public class Main {
             System.out.println("Index built and saved successfully!");
         }
 
-        IndexData data = io.read_index_from_disk(indexPath);
+        WebIndex data = io.read_index_from_disk(indexPath);
         lexicon = data.lexicon;
         postings = data.postings;
         documents = data.documents;
@@ -72,8 +71,7 @@ public class Main {
             termDf.put(e.getKey(), e.getValue().size());
         }
         // loop
-        QueryProcessor qp = new QueryProcessor();
-        RetrievalEngine engine = new RetrievalEngine();
+        WebSearchEngine engine = new WebSearchEngine();
         Scanner sc = new Scanner(System.in);
         System.out.println("\n=== Information Retrieval System ===");
         System.out.println("Type a query, or 'exit' to quit.");
@@ -83,8 +81,7 @@ public class Main {
             String query = sc.nextLine().trim();
             if (query.equalsIgnoreCase("exit")) break;
             if (query.isEmpty()) continue;
-
-            List<Integer> queryTerms = qp.processQuery(query, lexicon, tokenizer, stopFilter, stemmer);
+            List<Integer> queryTerms = HtmlQueryProcessor.processQuery(query, lexicon, stopFilter, stemmer);
 
             if (queryTerms.isEmpty()) {
                 System.out.println("No matching terms found in lexicon.");
@@ -94,7 +91,6 @@ public class Main {
             Map<Integer, Double> scores = engine.scoreBM25(
                     queryTerms, postings, termDf, documents, documents.size());
 
-            // Sort and display top 10
             scores.entrySet().stream()
                     .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
                     .limit(10)

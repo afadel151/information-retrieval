@@ -11,6 +11,10 @@ import com.emp.indexer.DocumentMeta;
 import com.emp.indexer.DocumentReader;
 import com.emp.indexer.Stemmer;
 import com.emp.indexer.StopWordsFilter;
+import com.emp.web_indexer.models.HtmlToken;
+import com.emp.web_indexer.models.PositionInfo;
+import com.emp.web_indexer.models.Posting;
+import com.emp.web_indexer.models.TagWeights;
 
 public class WebIndexer {
 

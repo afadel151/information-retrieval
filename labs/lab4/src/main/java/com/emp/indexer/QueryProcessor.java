@@ -8,6 +8,8 @@ public class QueryProcessor {
 
     //List<Integer> indexQuery(String query)
     //output : list of termIDs present in lexicon.
+
+    
     public List<Integer> processQuery(String query,
             Map<String, Integer> termStringToId,
             Tokenizer tokenizer,
@@ -34,7 +36,7 @@ public class QueryProcessor {
 
         // convert to term IDs (only if term exists in index) 
         for (String term : tokens) {
-            
+
             Integer termId = termStringToId.get(term);
             if (termId != null) {
                 queryTermIds.add(termId);
