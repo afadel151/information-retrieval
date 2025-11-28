@@ -18,6 +18,8 @@ import com.emp.indexer.RetrievalEngine;
 import com.emp.indexer.Stemmer;
 import com.emp.indexer.StopWordsFilter;
 import com.emp.indexer.Tokenizer;
+import com.emp.web_indexer.HtmlTokenizer;
+import com.emp.web_indexer.WebIndexer;
 
 public class Main {
 
@@ -30,7 +32,7 @@ public class Main {
 
         String indexPath = basePath;               // where lexicon.txt, postings.txt, documents.txt live
 
-        Tokenizer tokenizer = new Tokenizer();
+        HtmlTokenizer tokenizer = new HtmlTokenizer();
         StopWordsFilter stopFilter = new StopWordsFilter(englishStopword,frenchStopword,htmlStopwords);
         Stemmer stemmer = new Stemmer();
         IndexDiskIO io = new IndexDiskIO();
@@ -40,8 +42,7 @@ public class Main {
         Map<Integer, DocumentMeta> documents;
         Map<Integer, Integer> termDf = new HashMap<>();
 
-        //Build index if files are empty or missing, else load from disk
-
+  
         boolean needBuild = Files.size(Paths.get("./index_data/lexicon.txt")) == 0 ||
                             Files.size(Paths.get("./index_data/docs.txt")) == 0 ||
                             Files.size(Paths.get("./index_data/postings.txt")) == 0;
@@ -49,7 +50,7 @@ public class Main {
         if (needBuild) {
             System.out.println("No index found — building new index...");
 
-            Indexer indexer = new Indexer(tokenizer, stopFilter, stemmer);
+            WebIndexer indexer = new WebIndexer(tokenizer, stopFilter, stemmer);
             indexer.buildIndex(corpusPath);
 
             // load document metadata again for saving

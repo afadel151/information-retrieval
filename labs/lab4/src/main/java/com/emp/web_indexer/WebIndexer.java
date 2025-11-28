@@ -1,4 +1,4 @@
-package  com.emp.web_indexer;
+package com.emp.web_indexer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import com.emp.indexer.DocumentMeta;
 import com.emp.indexer.DocumentReader;
 import com.emp.indexer.Stemmer;
 import com.emp.indexer.StopWordsFilter;
-import com.emp.indexer.Tokenizer;
 
 public class WebIndexer {
 
@@ -22,7 +21,7 @@ public class WebIndexer {
     private final Map<String, Integer> termToId = new HashMap<>();
     private final Map<Integer, String> idToTerm = new HashMap<>();
     private final Map<Integer, List<Posting>> invertedIndex = new HashMap<>();
-    private final Map<Integer, Integer> termDf = new HashMap<>();           
+    private final Map<Integer, Integer> termDf = new HashMap<>();
 
     private int nextTermId = 0;
 
@@ -63,9 +62,9 @@ public class WebIndexer {
                 tokens = stopFilter.filterHtml(tokens);
             }
             if (Config.USE_STEMMING) {
-                tokens = stemmer.stemAll(tokens);
+                tokens = stemmer.stemAllHtml(tokens);
             }
-            Map<String, Integer> termFreqs = computeTermFrequency(tokens);
+            Map<String, List<PositionInfo>> termFreqs = computeTermFrequency(tokens);
 
             updateInvertedIndex(docId, termFreqs);
         }
@@ -73,20 +72,26 @@ public class WebIndexer {
         System.out.println("Index built with " + termToId.size() + " unique terms.");
     }
 
-    private Map<String, Integer> computeTermFrequency(List<String> tokens) {
-        Map<String, Integer> tf = new HashMap<>();
+    private Map<String, List<PositionInfo>> computeTermFrequency(List<HtmlToken> tokens) {
+        Map<String, List<PositionInfo>> termPositions = new HashMap<>();
 
-        for (String token : tokens) {
-            tf.put(token, tf.getOrDefault(token, 0) + 1);
+        for (HtmlToken token : tokens) {
+            double weight = TagWeights.weightFor(token.tag);
+
+            termPositions
+                    .computeIfAbsent(token.term, k -> new ArrayList<>())
+                    .add(new PositionInfo(token.position, token.tag, weight));
         }
 
-        return tf;
+        return termPositions;
     }
 
-    private void updateInvertedIndex(int docId, Map<String, Integer> termFreqs) {
-        for (Map.Entry<String, Integer> entry : termFreqs.entrySet()) {
+    private void updateInvertedIndex(int docId,Map<String, List<PositionInfo>> termPositions) {
+
+        for (var entry : termPositions.entrySet()) {
             String term = entry.getKey();
-            int tf = entry.getValue();
+            List<PositionInfo> positions = entry.getValue();
+            int tf = positions.size();
 
             int termId = termToId.computeIfAbsent(term, t -> {
                 int id = nextTermId++;
@@ -94,8 +99,10 @@ public class WebIndexer {
                 return id;
             });
 
+            Posting posting = new Posting(docId, tf, positions);
+
             invertedIndex.computeIfAbsent(termId, k -> new ArrayList<>())
-                    .add(new int[]{docId, tf});
+                    .add(posting);
 
             termDf.put(termId, termDf.getOrDefault(termId, 0) + 1);
         }

@@ -1,7 +1,7 @@
 package com.emp.web_indexer;
 
 public class HtmlToken {
-    public final String term ;
+    public  String term;
     public final String tag; 
     public final int position; 
 
@@ -9,6 +9,11 @@ public class HtmlToken {
     public HtmlToken(int position, String tag, String term) {
         this.position = position;
         this.tag = tag;
+        this.term = term;
+    }
+
+    public void setTerm(String term)
+    {
         this.term = term;
     }
 }

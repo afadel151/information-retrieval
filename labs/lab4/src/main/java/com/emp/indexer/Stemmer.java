@@ -44,9 +44,10 @@ public class Stemmer {
     {
         List<HtmlToken> stems = new ArrayList<>(tokens.size());
         for (HtmlToken token : tokens) {
-            
+            token.setTerm(stem(token.term));
+            stems.add(token);
         }
-
+        return stems;
     }
 
 
