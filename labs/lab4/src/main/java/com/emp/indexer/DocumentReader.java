@@ -2,13 +2,15 @@ package  com.emp.indexer;
 
 // iterate over corpus folder
 
-import java.util.*;
-import java.util.stream.Stream;
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-// map each file with docID, calculate doc length and store docURL
-// output : Map<Integer, DocumentMeta (String path, int length)>, 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
 public class DocumentReader {
 
     public Map<Integer, DocumentMeta> loadDocuments(String corpusPath){
@@ -16,17 +18,13 @@ public class DocumentReader {
         try (Stream<Path> paths = Files.walk(Paths.get(corpusPath))){
             int docId = 0;
             for (Path file : (Iterable<Path>) paths.filter(Files::isRegularFile)::iterator) {
-                //  only text files :
                 String content = readDocument(file.toString());
-
-                //  estimate length before tokenization
                 int length = content.split("\\s+").length;
-
                 documents.put(docId, new DocumentMeta(file.toString(), length));
                 docId++;
             }
         }catch (IOException e) {
-            System.err.println(e);;
+            System.err.println(e);
         }
          System.out.println("Loaded " + documents.size() + " documents from " + corpusPath);
         return documents;

@@ -13,22 +13,20 @@ import com.emp.indexer.Stemmer;
 import com.emp.indexer.StopWordsFilter;
 import com.emp.indexer.Tokenizer;
 
-public class Indexer {
+public class WebIndexer {
 
-    //iterate documents, build in-memory hashmaps
-    //Data produced: Terms/Lexicon, Documents map, Posting lists.
-    private final Tokenizer tokenizer;
+    private final HtmlTokenizer tokenizer;
     private final StopWordsFilter stopFilter;
     private final Stemmer stemmer;
 
     private final Map<String, Integer> termToId = new HashMap<>();
     private final Map<Integer, String> idToTerm = new HashMap<>();
-    private final Map<Integer, List<int[]>> invertedIndex = new HashMap<>(); // termId -> list de [docId, tf]
-    private final Map<Integer, Integer> termDf = new HashMap<>();            // termId -> DF count
+    private final Map<Integer, List<Posting>> invertedIndex = new HashMap<>();
+    private final Map<Integer, Integer> termDf = new HashMap<>();           
 
     private int nextTermId = 0;
 
-    public Indexer(Tokenizer tokenizer, StopWordsFilter stopFilter, Stemmer stemmer) {
+    public WebIndexer(HtmlTokenizer tokenizer, StopWordsFilter stopFilter, Stemmer stemmer) {
         this.tokenizer = tokenizer;
         this.stopFilter = stopFilter;
         this.stemmer = stemmer;
@@ -42,7 +40,7 @@ public class Indexer {
         return idToTerm;
     }
 
-    public Map<Integer, List<int[]>> getInvertedIndex() {
+    public Map<Integer, List<Posting>> getInvertedIndex() {
         return invertedIndex;
     }
 
@@ -60,19 +58,15 @@ public class Indexer {
 
             String content = reader.readDocument(path);
 
-            // text processing pipeline 
-            List<String> tokens = tokenizer.tokenize(content);
+            List<HtmlToken> tokens = tokenizer.tokenize(content);
             if (Config.USE_STOPWORDS) {
-                tokens = stopFilter.filter(tokens);
+                tokens = stopFilter.filterHtml(tokens);
             }
             if (Config.USE_STEMMING) {
                 tokens = stemmer.stemAll(tokens);
             }
-
-            // term Frequency
             Map<String, Integer> termFreqs = computeTermFrequency(tokens);
 
-            //Update inverted index 
             updateInvertedIndex(docId, termFreqs);
         }
 
