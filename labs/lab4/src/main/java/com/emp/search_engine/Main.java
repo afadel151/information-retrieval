@@ -1,4 +1,4 @@
-package  com.emp.search_engine;
+package com.emp.search_engine;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,19 +32,18 @@ public class Main {
         String indexPath = basePath;               // where lexicon.txt, postings.txt, documents.txt live
 
         HtmlTokenizer tokenizer = new HtmlTokenizer();
-        StopWordsFilter stopFilter = new StopWordsFilter(englishStopword,frenchStopword,htmlStopwords);
+        StopWordsFilter stopFilter = new StopWordsFilter(englishStopword, frenchStopword, htmlStopwords);
         Stemmer stemmer = new Stemmer();
         WebIndexDiskService io = new WebIndexDiskService();
 
         Map<String, Integer> lexicon;
-        Map<Integer,List<Posting>> postings;
+        Map<Integer, List<Posting>> postings;
         Map<Integer, DocumentMeta> documents;
         Map<Integer, Integer> termDf = new HashMap<>();
 
-  
-        boolean needBuild = Files.size(Paths.get("./index_data/lexicon.txt")) == 0 ||
-                            Files.size(Paths.get("./index_data/docs.txt")) == 0 ||
-                            Files.size(Paths.get("./index_data/postings.txt")) == 0;
+        boolean needBuild = Files.size(Paths.get("./index_data/lexicon.txt")) == 0
+                || Files.size(Paths.get("./index_data/docs.txt")) == 0
+                || Files.size(Paths.get("./index_data/postings.txt")) == 0;
 
         if (needBuild) {
             System.out.println("No index found — building new index...");
@@ -79,8 +78,12 @@ public class Main {
         while (true) {
             System.out.print("\nQuery > ");
             String query = sc.nextLine().trim();
-            if (query.equalsIgnoreCase("exit")) break;
-            if (query.isEmpty()) continue;
+            if (query.equalsIgnoreCase("exit")) {
+                break;
+            }
+            if (query.isEmpty()) {
+                continue;
+            }
             List<Integer> queryTerms = HtmlQueryProcessor.processQuery(query, lexicon, stopFilter, stemmer);
 
             if (queryTerms.isEmpty()) {
@@ -90,17 +93,34 @@ public class Main {
 
             Map<Integer, Double> scores = engine.scoreBM25(
                     queryTerms, postings, termDf, documents, documents.size());
-
+            
             scores.entrySet().stream()
                     .sorted(Map.Entry.<Integer, Double>comparingByValue().reversed())
                     .limit(10)
                     .forEach(e -> {
                         DocumentMeta doc = documents.get(e.getKey());
-                        System.out.printf("DocID %d | Score: %.4f | Path: %s%n",
-                                e.getKey(), e.getValue(), doc.getPath());
+                        String url = extractUrl(doc.getPath());
+                        System.out.printf("DocID %d | Score: %.4f | Url: %s%n",
+                                e.getKey(), e.getValue(), url);
                     });
         }
         System.out.println("Goodbye!");
         sc.close();
     }
+
+    private static String extractUrl(String path) {
+        String fileName = Paths.get(path).getFileName().toString();
+        String base = fileName.replace(".html", "");
+
+        int firstUnderscore = base.indexOf("_");
+        if (firstUnderscore == -1) {
+            return fileName;
+        }
+
+        String domain = base.substring(0, firstUnderscore);
+        String id = base.substring(firstUnderscore + 1).replace("_", "/");
+
+        return "https://" +  domain + "/" + id;
+    }
+
 }

@@ -15,8 +15,6 @@ public class HtmlQueryProcessor {
     public static  List<Integer> processQuery(String query,Map<String, Integer> termStringToId,StopWordsFilter stopFilter,Stemmer stemmer) {
 
 
-        System.err.println("query "+query);
-        System.err.println("termtoid "+termStringToId.get("MATAOUI"));
         List<Integer> queryTermIds = new ArrayList<>();
         Tokenizer tokenizer = new Tokenizer();
         if (query == null || query.isEmpty()) {
@@ -41,7 +39,6 @@ public class HtmlQueryProcessor {
                 queryTermIds.add(termId);
             }
         }
-        System.out.println("returning" + queryTermIds);
         return queryTermIds;
 
     }
