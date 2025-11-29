@@ -1,13 +1,13 @@
 package com.emp.web_indexer;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.emp.indexer.Config;
 import com.emp.indexer.DocumentMeta;
 import com.emp.web_indexer.models.PositionInfo;
 import com.emp.web_indexer.models.Posting;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class WebSearchEngine {
@@ -83,8 +83,6 @@ public class WebSearchEngine {
         return scores;
     }
 
-
-    // html term frequency , early words score higher
     private double computeWeightedTf(Posting posting) {
         double sum = 0.0;
 
