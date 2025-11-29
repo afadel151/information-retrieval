@@ -20,14 +20,22 @@ public class Stemmer {
     public String stem(String token) {
         if (token == null || token.isEmpty()) return token;
         String lang = languageDetector.detect(token);
-        if ("en".equals(lang) || "x".equals(lang)) {
-            porter.setCurrent(token);
-            porter.stem();
-            return porter.getCurrent();
-        }else {
-            frenchStemmer.setCurrent(token);
-            frenchStemmer.stem();
-            return frenchStemmer.getCurrent();
+        if (null == lang) {
+            return token;
+        }else switch (lang) {
+            case "en" -> {
+                porter.setCurrent(token);
+                porter.stem();
+                return porter.getCurrent();
+            }
+            // case "fr" -> {
+            //     frenchStemmer.setCurrent(token);
+            //     frenchStemmer.stem();
+            //     return frenchStemmer.getCurrent();
+            // }
+            default -> {
+                return token;
+            }
         }
     }
 
